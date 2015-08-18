@@ -13,4 +13,13 @@ public class Tweet {
 	//		
 	public int batch;
 	public double inferedLikelihood;
+	
+	
+	public int coin;
+	public int inferedCoin;
+	public int community;
+	public int realm;
+	public int inferedCommunity;
+	public int inferedRealm;
+	
 }
