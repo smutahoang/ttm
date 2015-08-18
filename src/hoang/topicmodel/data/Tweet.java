@@ -9,7 +9,7 @@ public class Tweet {
 	public int topic;
 	public int inferedTopic;
 	public boolean isTopicFixed;
-	public int fixedTopic;
+	public int fixedTopic;// for STwitterLDA
 	//		
 	public int batch;
 	public double inferedLikelihood;

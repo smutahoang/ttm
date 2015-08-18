@@ -1,4 +1,9 @@
-//Qiu Minghui's Behavior-TwitterLDA with background topic
+/***
+Qiu Minghui's Behavior-TwitterLDA with background topic 
+Reference: Qiu et al.; "It is not just what we say, but how we say them: LDA-based behavior-topic model." 
+SDM 2013.
+*/
+
 package hoang.topicmodel.model.twitterLDA;
 import hoang.larc.tooler.RankingTool;
 import hoang.larc.tooler.WeightedElement;

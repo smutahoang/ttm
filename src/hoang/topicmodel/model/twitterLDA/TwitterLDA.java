@@ -1,13 +1,12 @@
-/***
- Semi-supervised TwitterLDA
- tweets are partially topic labeled 
- */
+/****
+ TwitterLDA without background topic 
+*/
+
 package hoang.topicmodel.model.twitterLDA;
+
 import hoang.topicmodel.data.Tweet;
 import hoang.topicmodel.data.User;
-
 import hoang.larc.tooler.RankingTool;
-import hoang.larc.tooler.SystemTool;
 import hoang.larc.tooler.WeightedElement;
 
 import java.io.BufferedReader;
@@ -20,7 +19,7 @@ import java.util.Random;
 
 import org.apache.commons.io.FilenameUtils;
 
-public class STwitterLDA {
+public class TwitterLDA {
 	//
 	public String dataPath;
 	public String outputPath;
@@ -71,7 +70,7 @@ public class STwitterLDA {
 		HashMap<Integer, String> userIndex2Id = null;
 		// read tweet
 		try {
-			String folderName = dataPath + "/users";
+			String folderName = dataPath + "/tweet/users";
 			File tweetFolder = new File(folderName);
 			// read number of users
 			int nUser = tweetFolder.listFiles().length;
@@ -109,22 +108,16 @@ public class STwitterLDA {
 					String[] tokens = line.split(" ");
 					users[u].tweets[j].tweetID = tokens[0];
 					users[u].tweets[j].batch = Integer.parseInt(tokens[1]);
-					users[u].tweets[j].fixedTopic = Integer.parseInt(tokens[2]);
-					users[u].tweets[j].isTopicFixed = true;
-					if ((users[u].tweets[j].fixedTopic) < 0
-							|| (users[u].tweets[j].batch == testBatch)) {
-						users[u].tweets[j].isTopicFixed = false;
-					}
-					users[u].tweets[j].words = new int[tokens.length - 3];
-					for (int i = 0; i < tokens.length - 3; i++)
+					users[u].tweets[j].words = new int[tokens.length - 2];
+					for (int i = 0; i < tokens.length - 2; i++)
 						users[u].tweets[j].words[i] = Integer
-								.parseInt(tokens[i + 3]);
+								.parseInt(tokens[i + 2]);
 				}
 				br.close();
 			}
 
 			// read tweet vocabulary
-			String tweetVocabularyFileName = dataPath + "/vocabulary.txt";
+			String tweetVocabularyFileName = dataPath + "/tweet/vocabulary.txt";
 
 			br = new BufferedReader(new FileReader(tweetVocabularyFileName));
 			int nTweetWord = 0;
@@ -137,10 +130,8 @@ public class STwitterLDA {
 			br = new BufferedReader(new FileReader(tweetVocabularyFileName));
 			while ((line = br.readLine()) != null) {
 				String[] tokens = line.split(",");
-				// int index = Integer.parseInt(tokens[0]);
-				// tweetVocabulary[index] = tokens[1];
-				int index = Integer.parseInt(tokens[1]);
-				tweetVocabulary[index] = tokens[0];
+				int index = Integer.parseInt(tokens[0]);
+				tweetVocabulary[index] = tokens[1];
 			}
 			br.close();
 
@@ -169,15 +160,13 @@ public class STwitterLDA {
 	}
 
 	private void initilize() {
-		// init topic for each tweet
+		// init coin and topic for each tweet and each behavior
 		for (int u = 0; u < users.length; u++) {
 			// tweet
 			for (int j = 0; j < users[u].tweets.length; j++) {
-				if (users[u].tweets[j].isTopicFixed) {
-					users[u].tweets[j].topic = users[u].tweets[j].fixedTopic;
-				} else {
-					users[u].tweets[j].topic = rand.nextInt(nTopics);
-				}
+				if (users[u].tweets[j].batch == testBatch)
+					continue;
+				users[u].tweets[j].topic = rand.nextInt(nTopics);
 			}
 		}
 		// declare and initiate counting tables
@@ -199,6 +188,8 @@ public class STwitterLDA {
 		for (int u = 0; u < users.length; u++) {
 			// tweet
 			for (int j = 0; j < users[u].tweets.length; j++) {
+				if (users[u].tweets[j].batch == testBatch)
+					continue;
 				int z = users[u].tweets[j].topic;
 				// user-topic and community-topic
 				n_zu[z][u]++;
@@ -219,7 +210,7 @@ public class STwitterLDA {
 		alpha = new double[nTopics];
 		sum_alpha = 0;
 		for (int z = 0; z < nTopics; z++) {
-			alpha[z] = 10.0 / nTopics;
+			alpha[z] = 50.0 / nTopics;
 			sum_alpha += alpha[z];
 		}
 		// topic tweet word prior
@@ -300,12 +291,12 @@ public class STwitterLDA {
 		System.out.print("Initializing ... ");
 		initilize();
 		System.out.println("... Done!");
-		for (int i = 0; i <= burningPeriod + maxIteration; i++) {
+		for (int i = 0; i < burningPeriod + maxIteration; i++) {
 			System.out.print("iteration " + i);
 			for (int u = 0; u < users.length; u++) {
 				// tweet
 				for (int t = 0; t < users[u].tweets.length; t++) {
-					if (users[u].tweets[t].isTopicFixed)
+					if (users[u].tweets[t].batch == testBatch)
 						continue;
 					sampleTweetTopic(u, t);
 				}
@@ -373,7 +364,12 @@ public class STwitterLDA {
 			// tweet
 			for (int t = 0; t < users[u].tweets.length; t++) {
 				double logLikelihood = getTweetLikelihood(u, t);
-				tweetLogLikelidhood += logLikelihood;
+				if (users[u].tweets[t].batch != testBatch)
+					tweetLogLikelidhood += logLikelihood;
+				else {
+					tweetLogPerplexity += (-logLikelihood);
+					nTestTweet++;
+				}
 			}
 		}
 		tweetLogPerplexity /= nTestTweet;
@@ -382,10 +378,6 @@ public class STwitterLDA {
 	private void inferTweetTopic() {
 		for (int u = 0; u < users.length; u++) {
 			for (int t = 0; t < users[u].tweets.length; t++) {
-				if (users[u].tweets[t].isTopicFixed) {
-					users[u].tweets[t].inferedTopic = users[u].tweets[t].fixedTopic;
-					continue;
-				}
 				users[u].tweets[t].inferedTopic = 0;
 				users[u].tweets[t].inferedLikelihood = 0;
 				for (int i = 0; i < users[u].tweets[t].words.length; i++) {
@@ -469,6 +461,8 @@ public class STwitterLDA {
 			tweetPerTopicCount[z] = 0;
 		for (int u = 0; u < users.length; u++) {
 			for (int t = 0; t < users[u].tweets.length; t++) {
+				if (users[u].tweets[t].batch == testBatch)
+					continue;
 				tweetPerTopicCount[users[u].tweets[t].inferedTopic]++;
 			}
 		}
@@ -483,6 +477,8 @@ public class STwitterLDA {
 
 		for (int u = 0; u < users.length; u++) {
 			for (int t = 0; t < users[u].tweets.length; t++) {
+				if (users[u].tweets[t].batch == testBatch)
+					continue;
 				int z = users[u].tweets[t].inferedTopic;
 				tweetID[z][tweetPerTopicCount[z]] = users[u].tweets[t].tweetID;
 				perTweetPerplexity[z][tweetPerTopicCount[z]] = users[u].tweets[t].inferedLikelihood
@@ -562,48 +558,11 @@ public class STwitterLDA {
 		}
 	}
 
-	private void outputInferedTopic() {
-		try {
-
-			BufferedWriter bw_OneFile = new BufferedWriter(new FileWriter(
-					outputPath + "/tweets-inferedTopics.csv"));
-
-			SystemTool.createFolder(outputPath, "inferedTopicCoin");
-			for (int u = 0; u < users.length; u++) {
-				String fileName = outputPath + "/inferedTopicCoin/"
-						+ users[u].userID + ".txt";
-
-				File file = new File(fileName);
-				if (!file.exists()) {
-					file.createNewFile();
-				}
-				BufferedWriter bw = new BufferedWriter(new FileWriter(
-						file.getAbsoluteFile()));
-				bw.write("tweets\n");
-				for (int t = 0; t < users[u].tweets.length; t++) {
-					bw.write(users[u].tweets[t].tweetID + "\t"
-							+ users[u].tweets[t].inferedTopic + "\t"
-							+ users[u].tweets[t].inferedLikelihood + "\n");
-					bw_OneFile.write(users[u].tweets[t].tweetID + ","
-							+ users[u].tweets[t].inferedTopic + ","
-							+ users[u].tweets[t].inferedLikelihood + "\n");
-				}
-				bw.close();
-			}
-			bw_OneFile.close();
-		} catch (Exception e) {
-			System.out.println("Error in writing out tweet topics to file!");
-			e.printStackTrace();
-			System.exit(0);
-		}
-	}
-	
 	public void outputAll() {
 		outputTweetTopics();
 		outputTweetTopicTopWords(20);
-		outputTweetTopicTopTweets(50);
-		outputInferedTopic();
+		outputTweetTopicTopTweets(200);
 		outputUserTopicDistribution();
-		outputLikelihoodPerplexity();		
+		outputLikelihoodPerplexity();
 	}
 }

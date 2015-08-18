@@ -1,8 +1,12 @@
-//TwitterLDA with background topic
+/****
+ TwitterLDA with background topic
+ Reference: Zhao, Wayne Xin, et al. "Comparing twitter and traditional media using topic models." 
+ ECIR 2011
+*/
+
 package hoang.topicmodel.model.twitterLDA;
 
 import hoang.larc.tooler.RankingTool;
-import hoang.larc.tooler.SystemTool;
 import hoang.larc.tooler.WeightedElement;
 import hoang.topicmodel.data.Tweet;
 import hoang.topicmodel.data.User;
@@ -774,91 +778,13 @@ public class BTwitterLDA {
 			System.exit(0);
 		}
 	}
-
-	private void outputInferedTopic() {
-		try {
-			SystemTool.createFolder(outputPath, "inferedTopicCoin");
-			for (int u = 0; u < users.length; u++) {
-				String fileName = outputPath + SystemTool.pathSeparator
-						+ "inferedTopicCoin" + SystemTool.pathSeparator
-						+ users[u].userID + ".txt";
-
-				File file = new File(fileName);
-				if (!file.exists()) {
-					file.createNewFile();
-				}
-				BufferedWriter bw = new BufferedWriter(new FileWriter(
-						file.getAbsoluteFile()));
-				bw.write("tweets\n");
-				for (int t = 0; t < users[u].tweets.length; t++)
-					bw.write(users[u].tweets[t].tweetID + "\t"
-							+ users[u].tweets[t].inferedTopic + "\n");
-				bw.close();
-			}
-		} catch (Exception e) {
-			System.out.println("Error in writing out tweet topics to file!");
-			e.printStackTrace();
-			System.exit(0);
-		}
-	}
-
-	private void outputTweetTopKTopics(int k) {
-		try {
-			String fileName = outputPath + SystemTool.pathSeparator
-					+ "tweetTopKTopics.csv";
-			File file = new File(fileName);
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			BufferedWriter bw = new BufferedWriter(new FileWriter(
-					file.getAbsoluteFile()));
-
-			String[] topics = new String[nTopics];
-			RankingTool rankTool = new RankingTool();
-
-			for (int z = 0; z < nTopics; z++)
-				topics[z] = z + "";
-			for (int u = 0; u < users.length; u++) {
-				for (int t = 0; t < users[u].tweets.length; t++) {
-					double[] probs = new double[nTopics];
-					double sumProbs = 0;
-					for (int z = 0; z < nTopics; z++) {
-						probs[z] = 1;
-						for (int i = 0; i < users[u].tweets[t].words.length; i++) {
-							int w = users[u].tweets[t].words[i];
-							probs[z] *= tweetTopics[z][w];
-						}
-						probs[z] *= users[u].topicDistribution[z];
-						sumProbs += probs[z];
-					}
-					for (int z = 0; z < nTopics; z++)
-						probs[z] /= sumProbs;
-					WeightedElement[] topTopics = rankTool.getTopKbyWeight(
-							topics, probs, k);
-					bw.write(users[u].tweets[t].tweetID);
-					for (int i = 0; i < k; i++)
-						bw.write("," + topTopics[i].name + ","
-								+ topTopics[i].weight);
-					bw.write("\n");
-				}
-			}
-			bw.close();
-		} catch (Exception e) {
-			System.out
-					.println("Error in writing out tweet top topics to file!");
-			e.printStackTrace();
-			System.exit(0);
-		}
-	}
-
+	
 	public void outputAll() {
 		outputTweetTopics();
 		outputTweetTopicTopWords(20);
-		outputTweetTopicTopTweets(200);
-		// outputInferedTopic();
+		outputTweetTopicTopTweets(50);
 		outputUserTopicDistribution();
 		outputLikelihoodPerplexity();
-		// outputTweetTopKTopics(3);
 		outputCoinBias();
 	}
 }
