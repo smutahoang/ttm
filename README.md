@@ -4,9 +4,13 @@ Topic models for microblogging content:
 ==================================
 1. TwitterLDA
 ===============
-1.1 Reference: Comparing twitter and traditional media using topic models, Zhao et al., ECIR 2011
+
+1.1 Reference
 ===============
-1.2 Input format:
+Comparing twitter and traditional media using topic models, Zhao et al., ECIR 2011
+
+1.2 Input format
+===============
 +Each user's tweets are put in a file. The file is named by the user's user_id. Each line in the file has format:
 <tweetid><space><label><w1><space><w2><space>...<space><wT>
 where wj is index of a word in tweet vocabulary.
@@ -14,7 +18,7 @@ where wj is index of a word in tweet vocabulary.
 +Tweet vocabulary is put in "vocabulary.txt" file	
 + The "users" folder and the "vocabulary.txt" file are put in "tweet" folder
 + The path to 	"tweet" folder is input for the program
-===============
+
 1.3 Output format:
 + All output files are put in a given output folder
 + File "coinBias.csv" contains (global) bias of users toward choosing words from background topic. Format:
