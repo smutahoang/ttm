@@ -15,7 +15,6 @@ import java.util.Random;
 
 import org.apache.commons.io.FilenameUtils;
 
-
 public class RealmTopBehavior {
 	//
 	public String dataPath;
@@ -151,7 +150,7 @@ public class RealmTopBehavior {
 	private HashMap<Integer, String> userIndex2Id;
 
 	private ArrayTool arrayTool = new ArrayTool();
-	
+
 	// utility functions
 	private static double getAdjustedIntElementsEntropy(int[] elements,
 			double currEntropy, int currSum, int adjustedIndex,
@@ -256,8 +255,7 @@ public class RealmTopBehavior {
 		String line = null;
 		// read tweet
 		try {
-			String folderName = dataPath + SystemTool.pathSeparator + "tweet"
-					+ SystemTool.pathSeparator + "users";
+			String folderName = dataPath + "/tweet" + "/users";
 			File tweetFolder = new File(folderName);
 			// read number of users
 			int nUser = tweetFolder.listFiles().length;
@@ -304,9 +302,7 @@ public class RealmTopBehavior {
 			}
 
 			// read tweet vocabulary
-			String tweetVocabularyFileName = dataPath
-					+ SystemTool.pathSeparator + "tweet"
-					+ SystemTool.pathSeparator + "vocabulary.txt";
+			String tweetVocabularyFileName = dataPath + "/tweet/vocabulary.txt";
 
 			br = new BufferedReader(new FileReader(tweetVocabularyFileName));
 			int nTweetWord = 0;
@@ -330,8 +326,7 @@ public class RealmTopBehavior {
 		}
 		// read behaviors
 		try {
-			String behaviorMetaFileName = dataPath + SystemTool.pathSeparator
-					+ "behaviors.txt";
+			String behaviorMetaFileName = dataPath + "/behaviors.txt";
 			br = new BufferedReader(new FileReader(behaviorMetaFileName));
 			// get behavior metadata
 			line = br.readLine();
@@ -348,11 +343,10 @@ public class RealmTopBehavior {
 			}
 			br.close();
 			for (int l = 0; l < nBehaviorTypes; l++) {
-				String behaviorFolder = dataPath + SystemTool.pathSeparator
-						+ behaviorFolders[l];
+				String behaviorFolder = dataPath + "/" + behaviorFolders[l];
 				// training data
 				br = new BufferedReader(new FileReader(behaviorFolder
-						+ SystemTool.pathSeparator + "trainset.txt"));
+						+ "/trainset.txt"));
 				while ((line = br.readLine()) != null) {
 					String[] tokens = line.split(" ");
 					String userId = tokens[0];
@@ -374,7 +368,7 @@ public class RealmTopBehavior {
 				br.close();
 				// test data
 				br = new BufferedReader(new FileReader(behaviorFolder
-						+ SystemTool.pathSeparator + "testset.txt"));
+						+ "/testset.txt"));
 				while ((line = br.readLine()) != null) {
 					String[] tokens = line.split(" ");
 					String userId = tokens[0];
@@ -394,7 +388,7 @@ public class RealmTopBehavior {
 				br.close();
 				// vocabulary
 				br = new BufferedReader(new FileReader(behaviorFolder
-						+ SystemTool.pathSeparator + "vocabulary.txt"));
+						+ "/vocabulary.txt"));
 				int nBehaviorWord = 0;
 				while (br.readLine() != null) {
 					nBehaviorWord++;
@@ -403,7 +397,7 @@ public class RealmTopBehavior {
 				behaviorVocabularies[l] = new String[nBehaviorWord];
 
 				br = new BufferedReader(new FileReader(behaviorFolder
-						+ SystemTool.pathSeparator + "vocabulary.txt"));
+						+ "/vocabulary.txt"));
 				while ((line = br.readLine()) != null) {
 					String[] tokens = line.split(",");
 					int index = Integer.parseInt(tokens[0]);
@@ -1502,7 +1496,7 @@ public class RealmTopBehavior {
 			int bw = users[u].trainBehaviors[l][b].index;
 			n_lbz[l][bw][currz]--;
 			sum_nlbz[l][currz]--;
-			//*************************************************************
+			// *************************************************************
 			double sump = 0;
 			double[] p = new double[nTopics];
 			for (int z = 0; z < nTopics; z++) {
@@ -1606,7 +1600,7 @@ public class RealmTopBehavior {
 			int bw = users[u].trainBehaviors[l][b].index;
 			n_lbz[l][bw][currz]--;
 			sum_nlbz[l][currz]--;
-			//*************************************************************
+			// *************************************************************
 			double sump = 0;
 			double[] p = new double[nTopics];
 			for (int z = 0; z < nTopics; z++) {
@@ -2019,8 +2013,7 @@ public class RealmTopBehavior {
 
 	private void outputTweetTopics() {
 		try {
-			String fileName = outputPath + SystemTool.pathSeparator
-					+ "tweetTopics.csv";
+			String fileName = outputPath + "/tweetTopics.csv";
 			File file = new File(fileName);
 			if (!file.exists()) {
 				file.createNewFile();
@@ -2044,8 +2037,7 @@ public class RealmTopBehavior {
 
 	private void outputTweetTopicTopWords(int k) {
 		try {
-			String fileName = outputPath + SystemTool.pathSeparator
-					+ "tweetTopicTopWords.csv";
+			String fileName = outputPath + "/tweetTopicTopWords.csv";
 			File file = new File(fileName);
 			if (!file.exists()) {
 				file.createNewFile();
@@ -2153,8 +2145,7 @@ public class RealmTopBehavior {
 		}
 
 		try {
-			String fileName = outputPath + SystemTool.pathSeparator
-					+ "tweetTopicTopTweets.csv";
+			String fileName = outputPath + "/tweetTopicTopTweets.csv";
 			File file = new File(fileName);
 			if (!file.exists()) {
 				file.createNewFile();
@@ -2239,8 +2230,8 @@ public class RealmTopBehavior {
 	private void outputBehaviorTopics() {
 		try {
 			for (int i = 0; i < nBehaviorTypes; i++) {
-				String fileName = outputPath + SystemTool.pathSeparator
-						+ "behavior_" + behaviorNames[i] + ".csv";
+				String fileName = outputPath + "/behavior_" + behaviorNames[i]
+						+ ".csv";
 				File file = new File(fileName);
 				if (!file.exists()) {
 					file.createNewFile();
@@ -2265,8 +2256,8 @@ public class RealmTopBehavior {
 	private void outputBehaviorTopicTopWords(int k) {
 		try {
 			for (int i = 0; i < nBehaviorTypes; i++) {
-				String fileName = outputPath + SystemTool.pathSeparator
-						+ behaviorNames[i] + "TopicTopWords.csv";
+				String fileName = outputPath + "/" + behaviorNames[i]
+						+ "+TopicTopWords.csv";
 				File file = new File(fileName);
 				if (!file.exists()) {
 					file.createNewFile();
@@ -2294,8 +2285,7 @@ public class RealmTopBehavior {
 
 	private void outputUserTopicDistribution() {
 		try {
-			String fileName = outputPath + SystemTool.pathSeparator
-					+ "userTopics.csv";
+			String fileName = outputPath + "/userTopics.csv";
 			File file = new File(fileName);
 			if (!file.exists()) {
 				file.createNewFile();
@@ -2319,15 +2309,14 @@ public class RealmTopBehavior {
 
 	private void outputUserBiasRealmDistribution() {
 		try {
-			String fileName = outputPath + SystemTool.pathSeparator
-					+ "userRealm.csv";
+			String fileName = outputPath + "/userRealm.csv";
 			File file = new File(fileName);
 			if (!file.exists()) {
 				file.createNewFile();
 			}
 			BufferedWriter bw = new BufferedWriter(new FileWriter(
 					file.getAbsoluteFile()));
-			bw.write("userID,conformity_0, conformity_1");
+			bw.write("userID,mu_0,mu_1");
 			for (int r = 0; r < nRealms; r++)
 				bw.write(",realm_" + r);
 			bw.write("\n");
@@ -2351,8 +2340,7 @@ public class RealmTopBehavior {
 	private void outputRealmTopicDistribution() {
 		try {
 
-			String fileName = outputPath + SystemTool.pathSeparator
-					+ "realmTopicsDistribution.csv";
+			String fileName = outputPath + "/realmTopicsDistribution.csv";
 			File file = new File(fileName);
 			if (!file.exists()) {
 				file.createNewFile();
@@ -2374,59 +2362,9 @@ public class RealmTopBehavior {
 		}
 	}
 
-	private void outputRealmTopicCount() {
-		try {
-
-			String fileName = outputPath + SystemTool.pathSeparator
-					+ "realmTopicsCount.csv";
-			File file = new File(fileName);
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			BufferedWriter bw = new BufferedWriter(new FileWriter(
-					file.getAbsoluteFile()));
-			for (int r = 0; r < nRealms; r++) {
-				bw.write("" + r);
-				for (int z = 0; z < nTopics; z++)
-					bw.write("," + final_n_zr[z][r]);
-				bw.write("\n");
-			}
-			bw.close();
-		} catch (Exception e) {
-			System.out
-					.println("Error in writing out realm topic counts to file!");
-			e.printStackTrace();
-			System.exit(0);
-		}
-	}
-
-	private void outputCoinTopicCount() {
-		try {
-
-			String fileName = outputPath + SystemTool.pathSeparator
-					+ "coinTopicsCount.csv";
-			File file = new File(fileName);
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			BufferedWriter bw = new BufferedWriter(new FileWriter(
-					file.getAbsoluteFile()));
-			for (int z = 0; z < nTopics; z++)
-				bw.write(final_n_zc[z][0] + "," + final_n_zc[z][1] + "\n");
-
-			bw.close();
-		} catch (Exception e) {
-			System.out
-					.println("Error in writing out coin topic counts to file!");
-			e.printStackTrace();
-			System.exit(0);
-		}
-	}
-
 	private void outputLikelihoodPerplexity() {
 		try {
-			String fileName = outputPath + SystemTool.pathSeparator
-					+ "likelihood-perplexity.csv";
+			String fileName = outputPath + "/likelihood-perplexity.csv";
 			File file = new File(fileName);
 			if (!file.exists()) {
 				file.createNewFile();
@@ -2450,64 +2388,9 @@ public class RealmTopBehavior {
 		}
 	}
 
-	private void outputInferedTopicCoinCount() {
-		try {
-			double[] personalCount = new double[nTopics];
-			double[] commCount = new double[nTopics];
-			for (int z = 0; z < nTopics; z++) {
-				personalCount[z] = 0;
-				commCount[z] = 0;
-			}
-
-			for (int u = 0; u < users.length; u++) {
-				for (int t = 0; t < users[u].tweets.length; t++)
-					if (users[u].tweets[t].inferedCoin == 0)
-						personalCount[users[u].tweets[t].inferedTopic]++;
-					else
-						commCount[users[u].tweets[t].inferedTopic]++;
-
-				if (users[u].trainBehaviors == null)
-					continue;
-				for (int l = 0; l < nBehaviorTypes; l++) {
-					if (users[u].trainBehaviors[l] == null)
-						continue;
-					for (int b = 0; b < users[u].trainBehaviors[l].length; b++) {
-						if (users[u].trainBehaviors[l][b].inferedCoin == 0)
-							personalCount[users[u].trainBehaviors[l][b].inferedTopic] += users[u].trainBehaviors[l][b].count;
-						else
-							commCount[users[u].trainBehaviors[l][b].inferedTopic] += users[u].trainBehaviors[l][b].count;
-					}
-				}
-			}
-			String fileName = outputPath + SystemTool.pathSeparator
-					+ "inferedTopicCoinCount.csv";
-			File file = new File(fileName);
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			BufferedWriter bw = new BufferedWriter(new FileWriter(
-					file.getAbsoluteFile()));
-
-			bw.write("personal," + personalCount[0]);
-			for (int z = 1; z < nTopics; z++)
-				bw.write("," + personalCount[z]);
-			bw.write("\n");
-			bw.write("realm," + commCount[0]);
-			for (int z = 1; z < nTopics; z++)
-				bw.write("," + commCount[z]);
-			bw.close();
-
-		} catch (Exception e) {
-			System.out.println("Error in writing out tweet topics to file!");
-			e.printStackTrace();
-			System.exit(0);
-		}
-	}
-
 	private void outputLearningOptions() {
 		try {
-			String fileName = outputPath + SystemTool.pathSeparator
-					+ "learningOptions.txt";
+			String fileName = outputPath + "/learningOptions.txt";
 			File file = new File(fileName);
 			if (!file.exists()) {
 				file.createNewFile();
@@ -2557,11 +2440,6 @@ public class RealmTopBehavior {
 		outputUserTopicDistribution();
 		outputUserBiasRealmDistribution();
 		outputRealmTopicDistribution();
-		outputRealmTopicCount();
-		if (topicCoinSparityFlag) {
-			outputCoinTopicCount();
-		}
 		outputLikelihoodPerplexity();
-		outputInferedTopicCoinCount();
 	}
 }

@@ -70,7 +70,7 @@ public class TwitterLDA {
 		HashMap<Integer, String> userIndex2Id = null;
 		// read tweet
 		try {
-			String folderName = dataPath + "/tweet/users";
+			String folderName = dataPath + "/users";
 			File tweetFolder = new File(folderName);
 			// read number of users
 			int nUser = tweetFolder.listFiles().length;
@@ -117,7 +117,7 @@ public class TwitterLDA {
 			}
 
 			// read tweet vocabulary
-			String tweetVocabularyFileName = dataPath + "/tweet/vocabulary.txt";
+			String tweetVocabularyFileName = dataPath + "/vocabulary.txt";
 
 			br = new BufferedReader(new FileReader(tweetVocabularyFileName));
 			int nTweetWord = 0;
@@ -561,7 +561,7 @@ public class TwitterLDA {
 	public void outputAll() {
 		outputTweetTopics();
 		outputTweetTopicTopWords(20);
-		outputTweetTopicTopTweets(200);
+		outputTweetTopicTopTweets(20);
 		outputUserTopicDistribution();
 		outputLikelihoodPerplexity();
 	}
