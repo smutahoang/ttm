@@ -3,6 +3,7 @@
  tweets are partially topic labeled 
  */
 package hoang.topicmodel.model.twitterLDA;
+
 import hoang.topicmodel.data.Tweet;
 import hoang.topicmodel.data.User;
 
@@ -108,11 +109,9 @@ public class STwitterLDA {
 					users[u].tweets[j] = new Tweet();
 					String[] tokens = line.split(" ");
 					users[u].tweets[j].tweetID = tokens[0];
-					users[u].tweets[j].batch = Integer.parseInt(tokens[1]);
-					users[u].tweets[j].fixedTopic = Integer.parseInt(tokens[2]);
+					users[u].tweets[j].fixedTopic = Integer.parseInt(tokens[1]);
 					users[u].tweets[j].isTopicFixed = true;
-					if ((users[u].tweets[j].fixedTopic) < 0
-							|| (users[u].tweets[j].batch == testBatch)) {
+					if (users[u].tweets[j].fixedTopic < 0) {
 						users[u].tweets[j].isTopicFixed = false;
 					}
 					users[u].tweets[j].words = new int[tokens.length - 3];
@@ -597,13 +596,13 @@ public class STwitterLDA {
 			System.exit(0);
 		}
 	}
-	
+
 	public void outputAll() {
 		outputTweetTopics();
 		outputTweetTopicTopWords(20);
 		outputTweetTopicTopTweets(50);
 		outputInferedTopic();
 		outputUserTopicDistribution();
-		outputLikelihoodPerplexity();		
+		outputLikelihoodPerplexity();
 	}
 }

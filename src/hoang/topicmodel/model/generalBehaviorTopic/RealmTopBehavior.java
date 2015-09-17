@@ -2230,8 +2230,8 @@ public class RealmTopBehavior {
 	private void outputBehaviorTopics() {
 		try {
 			for (int i = 0; i < nBehaviorTypes; i++) {
-				String fileName = outputPath + "/behavior_" + behaviorNames[i]
-						+ ".csv";
+				String fileName = outputPath + "/" + behaviorNames[i]
+						+ "Topics.csv";
 				File file = new File(fileName);
 				if (!file.exists()) {
 					file.createNewFile();

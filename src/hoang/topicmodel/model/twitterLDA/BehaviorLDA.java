@@ -2,9 +2,10 @@
 Qiu Minghui's Behavior-TwitterLDA with background topic 
 Reference: Qiu et al.; "It is not just what we say, but how we say them: LDA-based behavior-topic model." 
 SDM 2013.
-*/
+ */
 
 package hoang.topicmodel.model.twitterLDA;
+
 import hoang.larc.tooler.RankingTool;
 import hoang.larc.tooler.WeightedElement;
 import hoang.topicmodel.data.Tweet;
@@ -20,7 +21,7 @@ import java.util.Random;
 
 import org.apache.commons.io.FilenameUtils;
 
-public class QBTwitterLDA {
+public class BehaviorLDA {
 	//
 	public String dataPath;
 	public String outputPath;
@@ -101,7 +102,7 @@ public class QBTwitterLDA {
 		HashMap<Integer, String> userIndex2Id = null;
 		// read tweet
 		try {
-			String folderName = dataPath + "/tweet/users";
+			String folderName = dataPath + "/tweets";
 			File tweetFolder = new File(folderName);
 			// read number of users
 			int nUser = tweetFolder.listFiles().length;
@@ -147,7 +148,7 @@ public class QBTwitterLDA {
 				br.close();
 			}
 			// read retweets
-			folderName = dataPath + "/retweetContent";
+			folderName = dataPath + "/retweets";
 			File retweetFolder = new File(folderName);
 			for (File retweetFile : retweetFolder.listFiles()) {
 				// index of the user
@@ -183,7 +184,7 @@ public class QBTwitterLDA {
 			}
 
 			// read tweet vocabulary
-			String tweetVocabularyFileName = dataPath + "/tweet/vocabulary.txt";
+			String tweetVocabularyFileName = dataPath + "vocabulary.txt";
 
 			br = new BufferedReader(new FileReader(tweetVocabularyFileName));
 			int nTweetWord = 0;
@@ -1060,7 +1061,8 @@ public class QBTwitterLDA {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(
 					file.getAbsoluteFile()));
 			for (int z = 0; z < nTopics; z++) {
-				bw.write(retweetBias[z][0] + "," + retweetBias[z][1] + "\n");
+				bw.write(z + "," + retweetBias[z][0] + "," + retweetBias[z][1]
+						+ "\n");
 			}
 			bw.close();
 		} catch (Exception e) {
