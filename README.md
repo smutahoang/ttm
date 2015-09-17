@@ -19,7 +19,8 @@ where wj is index of a word in tweet vocabulary.
 + The "users" folder and the "vocabulary.txt" file are put in "tweet" folder
 + The path to 	"tweet" folder is input for the program
 
-1.3 Output format:
+1.3 Output format
+===============
 + All output files are put in a given output folder
 + File "coinBias.csv" contains (global) bias of users toward choosing words from background topic. Format:
 <bias to background topic><bias to personal topics> 
@@ -50,10 +51,12 @@ where p_j is probability of the j-th word in the tweet vocabulary
 + File "userTopics.csv" contains users' topic distribution. Each line in the file is a topic. Format of a line:
 <user_id>,<p_0>,...,<p_N>
 where p_k is probability of the k-th topic
-=======================================
-2. BehaviorLDA
-=======================================
-3. Community Topic Behavior
-=======================================
-4. Generalized Topic Model
 
+2. BehaviorLDA
+==================================
+
+3. Community Topic Behavior
+==================================
+
+4. Generalized Topic Model
+==================================
